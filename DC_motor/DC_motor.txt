@@ -1,0 +1,816 @@
+function Modelica.Math.asin
+  input Real u;
+  output Real y(quantity = "Angle", unit = "rad", displayUnit = "deg");
+
+  external "C";
+end Modelica.Math.asin;
+
+function Modelica.Math.sin
+  input Real u(quantity = "Angle", unit = "rad", displayUnit = "deg");
+  output Real y;
+
+  external "C";
+end Modelica.Math.sin;
+
+class ckt
+  Real Rm.v(quantity = "ElectricPotential", unit = "V") "Voltage drop between the two pins (= p.v - n.v)";
+  Real Rm.i(quantity = "ElectricCurrent", unit = "A") "Current flowing from pin p to pin n";
+  Real Rm.p.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Rm.p.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  Real Rm.n.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Rm.n.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  parameter Boolean Rm.useHeatPort = false "=true, if HeatPort is enabled";
+  parameter Real Rm.T(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) = Rm.T_ref "Fixed device temperature if useHeatPort = false";
+  Real Rm.LossPower(quantity = "Power", unit = "W") "Loss power leaving component via HeatPort";
+  Real Rm.T_heatPort(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) "Temperature of HeatPort";
+  parameter Real Rm.R(quantity = "Resistance", unit = "Ohm", start = 1.0) "Resistance at temperature T_ref";
+  parameter Real Rm.T_ref(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) = 300.15 "Reference temperature";
+  parameter Real Rm.alpha(quantity = "LinearTemperatureCoefficient", unit = "1/K") = 0.0 "Temperature coefficient of resistance (R_actual = R*(1 + alpha*(T_heatPort - T_ref))";
+  Real Rm.R_actual(quantity = "Resistance", unit = "Ohm") "Actual resistance = R*(1 + alpha*(T_heatPort - T_ref))";
+  Real Rs.v(quantity = "ElectricPotential", unit = "V") "Voltage drop between the two pins (= p.v - n.v)";
+  Real Rs.i(quantity = "ElectricCurrent", unit = "A") "Current flowing from pin p to pin n";
+  Real Rs.p.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Rs.p.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  Real Rs.n.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Rs.n.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  parameter Boolean Rs.useHeatPort = false "=true, if HeatPort is enabled";
+  parameter Real Rs.T(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) = Rs.T_ref "Fixed device temperature if useHeatPort = false";
+  Real Rs.LossPower(quantity = "Power", unit = "W") "Loss power leaving component via HeatPort";
+  Real Rs.T_heatPort(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) "Temperature of HeatPort";
+  parameter Real Rs.R(quantity = "Resistance", unit = "Ohm", start = 1.0) "Resistance at temperature T_ref";
+  parameter Real Rs.T_ref(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) = 300.15 "Reference temperature";
+  parameter Real Rs.alpha(quantity = "LinearTemperatureCoefficient", unit = "1/K") = 0.0 "Temperature coefficient of resistance (R_actual = R*(1 + alpha*(T_heatPort - T_ref))";
+  Real Rs.R_actual(quantity = "Resistance", unit = "Ohm") "Actual resistance = R*(1 + alpha*(T_heatPort - T_ref))";
+  Real La.v(quantity = "ElectricPotential", unit = "V") "Voltage drop between the two pins (= p.v - n.v)";
+  Real La.i(quantity = "ElectricCurrent", unit = "A") "Current flowing from pin p to pin n";
+  Real La.p.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real La.p.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  Real La.n.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real La.n.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  parameter Real La.L(quantity = "Inductance", unit = "H", start = 1.0) "Inductance";
+  Real Ck.v(quantity = "ElectricPotential", unit = "V") "Voltage drop between the two pins (= p.v - n.v)";
+  Real Ck.i(quantity = "ElectricCurrent", unit = "A") "Current flowing from pin p to pin n";
+  Real Ck.p.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Ck.p.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  Real Ck.n.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Ck.n.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  parameter Real Ck.C(quantity = "Capacitance", unit = "F", min = 0.0, start = 1.0) "Capacitance";
+  Real Lk.v(quantity = "ElectricPotential", unit = "V") "Voltage drop between the two pins (= p.v - n.v)";
+  Real Lk.i(quantity = "ElectricCurrent", unit = "A") "Current flowing from pin p to pin n";
+  Real Lk.p.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Lk.p.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  Real Lk.n.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Lk.n.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  parameter Real Lk.L(quantity = "Inductance", unit = "H", start = 1.0) "Inductance";
+  Real Rk.v(quantity = "ElectricPotential", unit = "V") "Voltage drop between the two pins (= p.v - n.v)";
+  Real Rk.i(quantity = "ElectricCurrent", unit = "A") "Current flowing from pin p to pin n";
+  Real Rk.p.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Rk.p.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  Real Rk.n.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real Rk.n.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  parameter Boolean Rk.useHeatPort = false "=true, if HeatPort is enabled";
+  parameter Real Rk.T(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) = Rk.T_ref "Fixed device temperature if useHeatPort = false";
+  Real Rk.LossPower(quantity = "Power", unit = "W") "Loss power leaving component via HeatPort";
+  Real Rk.T_heatPort(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) "Temperature of HeatPort";
+  parameter Real Rk.R(quantity = "Resistance", unit = "Ohm", start = 1.0) "Resistance at temperature T_ref";
+  parameter Real Rk.T_ref(quantity = "ThermodynamicTemperature", unit = "K", displayUnit = "degC", min = 0.0) = 300.15 "Reference temperature";
+  parameter Real Rk.alpha(quantity = "LinearTemperatureCoefficient", unit = "1/K") = 0.0 "Temperature coefficient of resistance (R_actual = R*(1 + alpha*(T_heatPort - T_ref))";
+  Real Rk.R_actual(quantity = "Resistance", unit = "Ohm") "Actual resistance = R*(1 + alpha*(T_heatPort - T_ref))";
+  Real v.v(quantity = "ElectricPotential", unit = "V") "Voltage drop between the two pins (= p.v - n.v)";
+  Real v.i(quantity = "ElectricCurrent", unit = "A") "Current flowing from pin p to pin n";
+  Real v.p.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real v.p.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  Real v.n.v(quantity = "ElectricPotential", unit = "V") "Potential at the pin";
+  Real v.n.i(quantity = "ElectricCurrent", unit = "A") "Current flowing into the pin";
+  parameter Real v.offset(quantity = "ElectricPotential", unit = "V") = 0.0 "Voltage offset";
+  parameter Real v.startTime(quantity = "Time", unit = "s") = 0.0 "Time offset";
+  output Real v.signalSource.y "Connector of Real output signal";
+  parameter Real v.signalSource.amplitude = v.V "Amplitude of sine wave";
+  parameter Real v.signalSource.freqHz(quantity = "Frequency", unit = "Hz", start = 1.0) = v.freqHz "Frequency of sine wave";
+  parameter Real v.signalSource.phase(quantity = "Angle", unit = "rad", displayUnit = "deg") = v.phase "Phase of sine wave";
+  parameter Real v.signalSource.offset = v.offset "Offset of output signal";
+  parameter Real v.signalSource.startTime(quantity = "Time", unit = "s") = v.startTime "Output = offset for time < startTime";
+  protected constant Real v.signalSource.pi = 3.14159265358979;
+  parameter Real v.V(quantity = "ElectricPotential", unit = "V", start = 1.0) "Amplitude of sine wave";
+  parameter Real v.phase(quantity = "Angle", unit = "rad", displayUnit = "deg") = 0.0 "Phase of sine wave";
+  parameter Real v.freqHz(quantity = "Frequency", unit = "Hz", start = 1.0) "Frequency of sine wave";
+equation
+  assert(1.0 + Rm.alpha * (Rm.T_heatPort - Rm.T_ref) >= 1e-15,"Temperature outside scope of model!");
+  Rm.R_actual = Rm.R * (1.0 + Rm.alpha * (Rm.T_heatPort - Rm.T_ref));
+  Rm.v = Rm.R_actual * Rm.i;
+  Rm.LossPower = Rm.v * Rm.i;
+  Rm.i = Rm.p.i;
+  0.0 = Rm.p.i + Rm.n.i;
+  Rm.v = Rm.p.v - Rm.n.v;
+  Rm.T_heatPort = Rm.T;
+  assert(1.0 + Rs.alpha * (Rs.T_heatPort - Rs.T_ref) >= 1e-15,"Temperature outside scope of model!");
+  Rs.R_actual = Rs.R * (1.0 + Rs.alpha * (Rs.T_heatPort - Rs.T_ref));
+  Rs.v = Rs.R_actual * Rs.i;
+  Rs.LossPower = Rs.v * Rs.i;
+  Rs.i = Rs.p.i;
+  0.0 = Rs.p.i + Rs.n.i;
+  Rs.v = Rs.p.v - Rs.n.v;
+  Rs.T_heatPort = Rs.T;
+  La.L * der(La.i) = La.v;
+  La.v = La.p.v - La.n.v;
+  0.0 = La.p.i + La.n.i;
+  La.i = La.p.i;
+  Ck.i = Ck.C * der(Ck.v);
+  Ck.v = Ck.p.v - Ck.n.v;
+  0.0 = Ck.p.i + Ck.n.i;
+  Ck.i = Ck.p.i;
+  Lk.L * der(Lk.i) = Lk.v;
+  Lk.v = Lk.p.v - Lk.n.v;
+  0.0 = Lk.p.i + Lk.n.i;
+  Lk.i = Lk.p.i;
+  assert(1.0 + Rk.alpha * (Rk.T_heatPort - Rk.T_ref) >= 1e-15,"Temperature outside scope of model!");
+  Rk.R_actual = Rk.R * (1.0 + Rk.alpha * (Rk.T_heatPort - Rk.T_ref));
+  Rk.v = Rk.R_actual * Rk.i;
+  Rk.LossPower = Rk.v * Rk.i;
+  Rk.i = Rk.p.i;
+  0.0 = Rk.p.i + Rk.n.i;
+  Rk.v = Rk.p.v - Rk.n.v;
+  Rk.T_heatPort = Rk.T;
+  v.signalSource.y = v.signalSource.offset + (if time < v.signalSource.startTime then 0.0 else v.signalSource.amplitude * sin(6.28318530717959 * (v.signalSource.freqHz * (time - v.signalSource.startTime)) + v.signalSource.phase));
+  v.v = v.signalSource.y;
+  v.v = v.p.v - v.n.v;
+  0.0 = v.p.i + v.n.i;
+  v.i = v.p.i;
+  Rm.p.i + Rs.n.i = 0.0;
+  Rm.p.v = Rs.n.v;
+  Ck.p.i + (Rk.p.i + (Lk.p.i + La.n.i)) = 0.0;
+  Ck.p.v = La.n.v;
+  Ck.p.v = Lk.p.v;
+  Ck.p.v = Rk.p.v;
+  v.n.i + (Ck.n.i + (Rk.n.i + Lk.n.i)) = 0.0;
+  Ck.n.v = Lk.n.v;
+  Ck.n.v = Rk.n.v;
+  Ck.n.v = v.n.v;
+  Rs.p.i + v.p.i = 0.0;
+  Rs.p.v = v.p.v;
+  Rm.n.i + La.p.i = 0.0;
+  La.p.v = Rm.n.v;
+end ckt;
+bltdump:
+Variables (19)
+=========
+1: output  v.signalSource.y:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine, .Modelica.Blocks.Interfaces.RealOutput type: Real  indx = -1
+2:  v.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+3:  v.p.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+4:  Rk.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+5:  Rk.n.i:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real  indx = -1
+6:  Rk.p.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+7:  Rk.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+8:  Lk.i:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Current type: Real  indx = -1
+9:  Lk.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Voltage type: Real  indx = -1
+10:  Ck.p.i:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real  indx = -1
+11:  Ck.v:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Voltage type: Real  indx = -1
+12:  La.i:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Current type: Real  indx = -1
+13:  La.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Voltage type: Real  indx = -1
+14:  Rs.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+15:  Rs.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+16:  Rs.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+17:  Rm.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+18:  Rm.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+19:  Rm.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+
+Known Variables (constants) (32)
+=============================
+1:  v.freqHz:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Frequency type: Real (start = 1.0 )  indx = -1
+2:  v.phase:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+3:  v.V:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Voltage type: Real (start = 1.0 )  indx = -1
+4:  v.signalSource.pi:CONST(protected = true )  = 3.14159265358979 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real (protected = true )  indx = -1
+5:  v.signalSource.startTime:PARAM()  = v.startTime .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+6:  v.signalSource.offset:PARAM()  = v.offset .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+7:  v.signalSource.phase:PARAM()  = v.phase .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+8:  v.signalSource.freqHz:PARAM(start = 1.0 )  = v.freqHz .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real (start = 1.0 )  indx = -1
+9:  v.signalSource.amplitude:PARAM()  = v.V .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+10:  v.startTime:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+11:  v.offset:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+12:  Rk.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+13:  Rk.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+14:  Rk.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+15:  Rk.T:PARAM(min = 0.0 )  = Rk.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+16:  Rk.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+17:  Lk.L:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Inductance type: Real (start = 1.0 )  indx = -1
+18:  Ck.C:PARAM(min = 0.0 start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Capacitance type: Real (min = 0.0 start = 1.0 )  indx = -1
+19:  La.L:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Inductance type: Real (start = 1.0 )  indx = -1
+20:  Rs.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+21:  Rs.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+22:  Rs.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+23:  Rs.T:PARAM(min = 0.0 )  = Rs.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+24:  Rs.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+25:  Rm.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+26:  Rm.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+27:  Rm.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+28:  Rm.T:PARAM(min = 0.0 )  = Rm.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+29:  Rm.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+30:  Rm.R_actual:VARIABLE()  = Rm.R * (1.0 + Rm.alpha * (Rm.T - Rm.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+31:  Rs.R_actual:VARIABLE()  = Rs.R * (1.0 + Rs.alpha * (Rs.T - Rs.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+32:  Rk.R_actual:VARIABLE()  = Rk.R * (1.0 + Rk.alpha * (Rk.T - Rk.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+External Objects (0)
+=============================
+Classes of External Objects (0)
+=============================
+AliasVariables: 30
+===============
+1:  Rm.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+2:  Rm.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+3:  Rm.T_heatPort:VARIABLE(min = 0.0 )  = Rm.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+4:  Rs.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+5:  Rs.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+6:  Rs.T_heatPort:VARIABLE(min = 0.0 )  = Rs.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+7:  La.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+8:  La.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+9:  Ck.i:VARIABLE()  = Ck.p.i .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Current type: Real ()  indx = -1
+10:  Ck.n.i:VARIABLE()  = -Ck.p.i .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+11:  Lk.n.i:VARIABLE()  = -Lk.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+12:  Lk.p.i:VARIABLE()  = Lk.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+13:  Rk.i:VARIABLE()  = -Rk.n.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+14:  Rk.p.i:VARIABLE()  = -Rk.n.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+15:  Rk.T_heatPort:VARIABLE(min = 0.0 )  = Rk.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+16:  v.v:VARIABLE()  = v.signalSource.y .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+17:  v.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Current type: Real ()  indx = -1
+18:  v.n.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+19:  Rs.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+20:  Rm.p.v:VARIABLE()  = Rs.n.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+21:  Ck.p.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+22:  La.n.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+23:  Lk.p.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+24:  Ck.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+25:  Lk.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+26:  Rk.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+27:  v.p.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+28:  Rs.p.v:VARIABLE()  = v.p.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+29:  Rm.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+30:  La.p.v:VARIABLE()  = Rm.n.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+
+
+Equations (19)
+=========
+1 : Rm.v = Rm.R_actual * La.i
+2 : Rm.LossPower = Rm.v * La.i
+3 : Rm.v = Rs.n.v - Rm.n.v
+4 : Rs.v = Rs.R_actual * La.i
+5 : Rs.LossPower = Rs.v * La.i
+6 : Rs.v = v.p.v - Rs.n.v
+7 : La.v = Rm.n.v - Rk.p.v
+8 : Ck.v = Rk.p.v - v.n.v
+9 : Lk.v = Rk.p.v - v.n.v
+10 : Rk.v = (-Rk.R_actual) * Rk.n.i
+11 : Rk.LossPower = (-Rk.v) * Rk.n.i
+12 : Rk.v = Rk.p.v - v.n.v
+13 : v.signalSource.y = v.signalSource.offset + (if time < v.signalSource.startTime then 0.0 else v.signalSource.amplitude * sin(6.28318530717959 * (v.signalSource.freqHz * (time - v.signalSource.startTime)) + v.signalSource.phase))
+14 : v.signalSource.y = v.p.v - v.n.v
+15 : Lk.i + (Ck.p.i + (-La.i)) - Rk.n.i = 0.0
+16 : Rk.n.i + ((-Lk.i) + ((-Ck.p.i) + La.i)) = 0.0
+17 : La.L * der(La.i) = La.v
+18 : Ck.p.i = Ck.C * der(Ck.v)
+19 : Lk.L * der(Lk.i) = Lk.v
+Simple Equations (3)
+=========
+1 : Algorithm no: 2 for inputs: () => outputs: ()
+2 : Algorithm no: 1 for inputs: () => outputs: ()
+3 : Algorithm no: 0 for inputs: () => outputs: ()
+Initial Equations (0)
+=========
+Zero Crossings :
+===============
+
+Array Equations :
+===============
+Algorithms:
+===============
+0. algorithm
+  assert( 1.0 + Rm.alpha * (Rm.T - Rm.T_ref) >= 1e-15, "Temperature outside scope of model!");
+1. algorithm
+  assert( 1.0 + Rs.alpha * (Rs.T - Rs.T_ref) >= 1e-15, "Temperature outside scope of model!");
+2. algorithm
+  assert( 1.0 + Rk.alpha * (Rk.T - Rk.T_ref) >= 1e-15, "Temperature outside scope of model!");
+Incidence Matrix (row == equation)
+====================================
+number of rows: 19
+1:19 -12 
+2:17 19 -12 
+3:19 15 18 
+4:16 -12 
+5:14 16 -12 
+6:16 3 15 
+7:13 18 6 
+8:-11 6 2 
+9:9 6 2 
+10:7 5 
+11:4 7 5 
+12:7 6 2 
+13:1 
+14:1 3 2 
+15:5 10 -8 -12 
+16:-12 -8 5 10 
+17:12 13 
+18:10 11 
+19:8 9 
+Transpose Incidence Matrix (row == var)
+=====================================
+number of rows: 19
+1:14 13 
+2:14 12 9 8 
+3:14 6 
+4:11 
+5:16 15 11 10 
+6:12 9 8 7 
+7:12 11 10 
+8:19 -16 -15 
+9:19 9 
+10:18 16 15 
+11:18 -8 
+12:17 -16 -15 -5 -4 -2 -1 
+13:17 7 
+14:5 
+15:6 3 
+16:6 5 4 
+17:2 
+18:7 3 
+19:3 2 1 
+Matching
+========
+19 variables and equations
+var 1 is solved in eqn 13
+var 2 is solved in eqn 12
+var 3 is solved in eqn 14
+var 4 is solved in eqn 11
+var 5 is solved in eqn 15
+var 6 is solved in eqn 8
+var 7 is solved in eqn 10
+var 8 is solved in eqn 19
+var 9 is solved in eqn 9
+var 10 is solved in eqn 16
+var 11 is solved in eqn 18
+var 12 is solved in eqn 17
+var 13 is solved in eqn 7
+var 14 is solved in eqn 5
+var 15 is solved in eqn 6
+var 16 is solved in eqn 4
+var 17 is solved in eqn 2
+var 18 is solved in eqn 3
+var 19 is solved in eqn 1
+Blocks
+=======
+{16, 15} Ck.p.i Rk.n.i 
+{18} der(Ck.v) 
+{13} v.signalSource.y 
+{10} Rk.v 
+{11} Rk.LossPower 
+{12, 8} v.n.v Rk.p.v 
+{9} Lk.v 
+{19} der(Lk.i) 
+{14} v.p.v 
+{4} Rs.v 
+{5} Rs.LossPower 
+{6} Rs.n.v 
+{1} Rm.v 
+{2} Rm.LossPower 
+{3} Rm.n.v 
+{7} La.v 
+{17} der(La.i) 
+bltdump:
+Variables (19)
+=========
+1: output  v.signalSource.y:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine, .Modelica.Blocks.Interfaces.RealOutput type: Real  indx = -1
+2:  v.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+3:  v.p.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+4:  Rk.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+5:  Rk.n.i:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real  indx = -1
+6:  Rk.p.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+7:  Rk.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+8:  Lk.i:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Current type: Real  indx = -1
+9:  Lk.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Voltage type: Real  indx = -1
+10:  Ck.p.i:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real  indx = -1
+11:  Ck.v:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Voltage type: Real  indx = -1
+12:  La.i:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Current type: Real  indx = -1
+13:  La.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Voltage type: Real  indx = -1
+14:  Rs.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+15:  Rs.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+16:  Rs.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+17:  Rm.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+18:  Rm.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+19:  Rm.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+
+Known Variables (constants) (32)
+=============================
+1:  v.freqHz:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Frequency type: Real (start = 1.0 )  indx = -1
+2:  v.phase:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+3:  v.V:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Voltage type: Real (start = 1.0 )  indx = -1
+4:  v.signalSource.pi:CONST(protected = true )  = 3.14159265358979 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real (protected = true )  indx = -1
+5:  v.signalSource.startTime:PARAM()  = v.startTime .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+6:  v.signalSource.offset:PARAM()  = v.offset .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+7:  v.signalSource.phase:PARAM()  = v.phase .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+8:  v.signalSource.freqHz:PARAM(start = 1.0 )  = v.freqHz .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real (start = 1.0 )  indx = -1
+9:  v.signalSource.amplitude:PARAM()  = v.V .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+10:  v.startTime:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+11:  v.offset:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+12:  Rk.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+13:  Rk.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+14:  Rk.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+15:  Rk.T:PARAM(min = 0.0 )  = Rk.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+16:  Rk.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+17:  Lk.L:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Inductance type: Real (start = 1.0 )  indx = -1
+18:  Ck.C:PARAM(min = 0.0 start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Capacitance type: Real (min = 0.0 start = 1.0 )  indx = -1
+19:  La.L:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Inductance type: Real (start = 1.0 )  indx = -1
+20:  Rs.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+21:  Rs.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+22:  Rs.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+23:  Rs.T:PARAM(min = 0.0 )  = Rs.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+24:  Rs.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+25:  Rm.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+26:  Rm.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+27:  Rm.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+28:  Rm.T:PARAM(min = 0.0 )  = Rm.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+29:  Rm.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+30:  Rm.R_actual:VARIABLE()  = Rm.R * (1.0 + Rm.alpha * (Rm.T - Rm.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+31:  Rs.R_actual:VARIABLE()  = Rs.R * (1.0 + Rs.alpha * (Rs.T - Rs.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+32:  Rk.R_actual:VARIABLE()  = Rk.R * (1.0 + Rk.alpha * (Rk.T - Rk.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+External Objects (0)
+=============================
+Classes of External Objects (0)
+=============================
+AliasVariables: 30
+===============
+1:  Rm.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+2:  Rm.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+3:  Rm.T_heatPort:VARIABLE(min = 0.0 )  = Rm.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+4:  Rs.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+5:  Rs.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+6:  Rs.T_heatPort:VARIABLE(min = 0.0 )  = Rs.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+7:  La.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+8:  La.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+9:  Ck.i:VARIABLE()  = Ck.p.i .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Current type: Real ()  indx = -1
+10:  Ck.n.i:VARIABLE()  = -Ck.p.i .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+11:  Lk.n.i:VARIABLE()  = -Lk.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+12:  Lk.p.i:VARIABLE()  = Lk.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+13:  Rk.i:VARIABLE()  = -Rk.n.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+14:  Rk.p.i:VARIABLE()  = -Rk.n.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+15:  Rk.T_heatPort:VARIABLE(min = 0.0 )  = Rk.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+16:  v.v:VARIABLE()  = v.signalSource.y .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+17:  v.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Current type: Real ()  indx = -1
+18:  v.n.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+19:  Rs.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+20:  Rm.p.v:VARIABLE()  = Rs.n.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+21:  Ck.p.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+22:  La.n.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+23:  Lk.p.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+24:  Ck.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+25:  Lk.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+26:  Rk.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+27:  v.p.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+28:  Rs.p.v:VARIABLE()  = v.p.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+29:  Rm.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+30:  La.p.v:VARIABLE()  = Rm.n.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+
+
+Equations (19)
+=========
+1 : Rm.v = Rm.R_actual * La.i
+2 : Rm.LossPower = Rm.v * La.i
+3 : Rm.v = Rs.n.v - Rm.n.v
+4 : Rs.v = Rs.R_actual * La.i
+5 : Rs.LossPower = Rs.v * La.i
+6 : Rs.v = v.p.v - Rs.n.v
+7 : La.v = Rm.n.v - Rk.p.v
+8 : Ck.v = Rk.p.v - v.n.v
+9 : Lk.v = Rk.p.v - v.n.v
+10 : Rk.v = (-Rk.R_actual) * Rk.n.i
+11 : Rk.LossPower = (-Rk.v) * Rk.n.i
+12 : Rk.v = Rk.p.v - v.n.v
+13 : v.signalSource.y = v.signalSource.offset + (if time < v.signalSource.startTime then 0.0 else v.signalSource.amplitude * sin(6.28318530717959 * (v.signalSource.freqHz * (time - v.signalSource.startTime)) + v.signalSource.phase))
+14 : v.signalSource.y = v.p.v - v.n.v
+15 : Lk.i + (Ck.p.i + (-La.i)) - Rk.n.i = 0.0
+16 : Rk.n.i + (La.i + ((-Ck.p.i) + (-Lk.i))) = 0.0
+17 : La.L * der(La.i) = La.v
+18 : Ck.p.i = Ck.C * der(Ck.v)
+19 : Lk.L * der(Lk.i) = Lk.v
+Simple Equations (3)
+=========
+1 : Algorithm no: 2 for inputs: () => outputs: ()
+2 : Algorithm no: 1 for inputs: () => outputs: ()
+3 : Algorithm no: 0 for inputs: () => outputs: ()
+Initial Equations (0)
+=========
+Zero Crossings :
+===============
+
+Array Equations :
+===============
+Algorithms:
+===============
+0. algorithm
+  assert( 1.0 + Rm.alpha * (Rm.T - Rm.T_ref) >= 1e-15, "Temperature outside scope of model!");
+1. algorithm
+  assert( 1.0 + Rs.alpha * (Rs.T - Rs.T_ref) >= 1e-15, "Temperature outside scope of model!");
+2. algorithm
+  assert( 1.0 + Rk.alpha * (Rk.T - Rk.T_ref) >= 1e-15, "Temperature outside scope of model!");
+Incidence Matrix (row == equation)
+====================================
+number of rows: 19
+1:19 -12 
+2:17 19 -12 
+3:19 15 18 
+4:16 -12 
+5:14 16 -12 
+6:16 3 15 
+7:13 18 6 
+8:-11 6 2 
+9:9 6 2 
+10:7 5 
+11:4 7 5 
+12:7 6 2 
+13:1 
+14:1 3 2 
+15:5 10 -8 -12 
+16:-12 -8 5 10 
+17:12 13 
+18:10 11 
+19:8 9 
+Transpose Incidence Matrix (row == var)
+=====================================
+number of rows: 19
+1:14 13 
+2:14 12 9 8 
+3:14 6 
+4:11 
+5:16 15 11 10 
+6:12 9 8 7 
+7:12 11 10 
+8:19 -16 -15 
+9:19 9 
+10:18 16 15 
+11:18 -8 
+12:17 -16 -15 -5 -4 -2 -1 
+13:17 7 
+14:5 
+15:6 3 
+16:6 5 4 
+17:2 
+18:7 3 
+19:3 2 1 
+Matching
+========
+19 variables and equations
+var 1 is solved in eqn 13
+var 2 is solved in eqn 12
+var 3 is solved in eqn 14
+var 4 is solved in eqn 11
+var 5 is solved in eqn 15
+var 6 is solved in eqn 8
+var 7 is solved in eqn 10
+var 8 is solved in eqn 19
+var 9 is solved in eqn 9
+var 10 is solved in eqn 16
+var 11 is solved in eqn 18
+var 12 is solved in eqn 17
+var 13 is solved in eqn 7
+var 14 is solved in eqn 5
+var 15 is solved in eqn 6
+var 16 is solved in eqn 4
+var 17 is solved in eqn 2
+var 18 is solved in eqn 3
+var 19 is solved in eqn 1
+Blocks
+=======
+{16, 15} Ck.p.i Rk.n.i 
+{18} der(Ck.v) 
+{13} v.signalSource.y 
+{10} Rk.v 
+{11} Rk.LossPower 
+{12, 8} v.n.v Rk.p.v 
+{9} Lk.v 
+{19} der(Lk.i) 
+{14} v.p.v 
+{4} Rs.v 
+{5} Rs.LossPower 
+{6} Rs.n.v 
+{1} Rm.v 
+{2} Rm.LossPower 
+{3} Rm.n.v 
+{7} La.v 
+{17} der(La.i) 
+bltdump:
+Variables (19)
+=========
+1: output  v.signalSource.y:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine, .Modelica.Blocks.Interfaces.RealOutput type: Real  indx = -1
+2:  v.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+3:  v.p.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+4:  Rk.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+5:  Rk.n.i:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real  indx = -1
+6:  Rk.p.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+7:  Rk.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+8:  Lk.i:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Current type: Real  indx = -1
+9:  Lk.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Voltage type: Real  indx = -1
+10:  Ck.p.i:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real  indx = -1
+11:  Ck.v:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Voltage type: Real  indx = -1
+12:  La.i:STATE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Current type: Real  indx = -1
+13:  La.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Voltage type: Real  indx = -1
+14:  Rs.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+15:  Rs.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+16:  Rs.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+17:  Rm.LossPower:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Power type: Real  indx = -1
+18:  Rm.n.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real  indx = -1
+19:  Rm.v:VARIABLE() .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Voltage type: Real  indx = -1
+
+Known Variables (constants) (32)
+=============================
+1:  v.freqHz:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Frequency type: Real (start = 1.0 )  indx = -1
+2:  v.phase:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+3:  v.V:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Voltage type: Real (start = 1.0 )  indx = -1
+4:  v.signalSource.pi:CONST(protected = true )  = 3.14159265358979 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real (protected = true )  indx = -1
+5:  v.signalSource.startTime:PARAM()  = v.startTime .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+6:  v.signalSource.offset:PARAM()  = v.offset .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+7:  v.signalSource.phase:PARAM()  = v.phase .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+8:  v.signalSource.freqHz:PARAM(start = 1.0 )  = v.freqHz .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real (start = 1.0 )  indx = -1
+9:  v.signalSource.amplitude:PARAM()  = v.V .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Blocks.Sources.Sine type: Real ()  indx = -1
+10:  v.startTime:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+11:  v.offset:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage type: Real ()  indx = -1
+12:  Rk.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+13:  Rk.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+14:  Rk.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+15:  Rk.T:PARAM(min = 0.0 )  = Rk.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+16:  Rk.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+17:  Lk.L:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Inductance type: Real (start = 1.0 )  indx = -1
+18:  Ck.C:PARAM(min = 0.0 start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Capacitance type: Real (min = 0.0 start = 1.0 )  indx = -1
+19:  La.L:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.SIunits.Inductance type: Real (start = 1.0 )  indx = -1
+20:  Rs.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+21:  Rs.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+22:  Rs.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+23:  Rs.T:PARAM(min = 0.0 )  = Rs.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+24:  Rs.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+25:  Rm.alpha:PARAM()  = 0.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real ()  indx = -1
+26:  Rm.T_ref:PARAM(min = 0.0 )  = 300.15 .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+27:  Rm.R:PARAM(start = 1.0 )  = 1.0 .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real (start = 1.0 )  indx = -1
+28:  Rm.T:PARAM(min = 0.0 )  = Rm.T_ref .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Real (min = 0.0 )  indx = -1
+29:  Rm.useHeatPort:PARAM()  = false .ckt, .Modelica.Electrical.Analog.Basic.Resistor type: Boolean ()  indx = -1
+30:  Rm.R_actual:VARIABLE()  = Rm.R * (1.0 + Rm.alpha * (Rm.T - Rm.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+31:  Rs.R_actual:VARIABLE()  = Rs.R * (1.0 + Rs.alpha * (Rs.T - Rs.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+32:  Rk.R_actual:VARIABLE()  = Rk.R * (1.0 + Rk.alpha * (Rk.T - Rk.T_ref)) .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Resistance type: Real ()  indx = -1
+External Objects (0)
+=============================
+Classes of External Objects (0)
+=============================
+AliasVariables: 30
+===============
+1:  Rm.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+2:  Rm.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+3:  Rm.T_heatPort:VARIABLE(min = 0.0 )  = Rm.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+4:  Rs.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+5:  Rs.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+6:  Rs.T_heatPort:VARIABLE(min = 0.0 )  = Rs.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+7:  La.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+8:  La.p.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+9:  Ck.i:VARIABLE()  = Ck.p.i .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.SIunits.Current type: Real ()  indx = -1
+10:  Ck.n.i:VARIABLE()  = -Ck.p.i .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+11:  Lk.n.i:VARIABLE()  = -Lk.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+12:  Lk.p.i:VARIABLE()  = Lk.i .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+13:  Rk.i:VARIABLE()  = -Rk.n.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Current type: Real ()  indx = -1
+14:  Rk.p.i:VARIABLE()  = -Rk.n.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+15:  Rk.T_heatPort:VARIABLE(min = 0.0 )  = Rk.T .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.SIunits.Temperature type: Real (min = 0.0 )  indx = -1
+16:  v.v:VARIABLE()  = v.signalSource.y .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+17:  v.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.SIunits.Current type: Real ()  indx = -1
+18:  v.n.i:VARIABLE()  = La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+19:  Rs.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+20:  Rm.p.v:VARIABLE()  = Rs.n.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+21:  Ck.p.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+22:  La.n.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+23:  Lk.p.v:VARIABLE()  = Rk.p.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+24:  Ck.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Capacitor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+25:  Lk.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+26:  Rk.n.v:VARIABLE()  = v.n.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+27:  v.p.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Sources.SineVoltage, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+28:  Rs.p.v:VARIABLE()  = v.p.v .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+29:  Rm.n.i:VARIABLE()  = -La.i .ckt, .Modelica.Electrical.Analog.Basic.Resistor, .Modelica.Electrical.Analog.Interfaces.NegativePin, .Modelica.SIunits.Current type: Real ()  indx = -1
+30:  La.p.v:VARIABLE()  = Rm.n.v .ckt, .Modelica.Electrical.Analog.Basic.Inductor, .Modelica.Electrical.Analog.Interfaces.PositivePin, .Modelica.SIunits.Voltage type: Real ()  indx = -1
+
+
+Equations (19)
+=========
+1 : Rm.v = Rm.R_actual * La.i
+2 : Rm.LossPower = Rm.v * La.i
+3 : Rm.v = Rs.n.v - Rm.n.v
+4 : Rs.v = Rs.R_actual * La.i
+5 : Rs.LossPower = Rs.v * La.i
+6 : Rs.v = v.p.v - Rs.n.v
+7 : La.v = Rm.n.v - Rk.p.v
+8 : Ck.v = Rk.p.v - v.n.v
+9 : Lk.v = Rk.p.v - v.n.v
+10 : Rk.v = (-Rk.R_actual) * Rk.n.i
+11 : Rk.LossPower = (-Rk.v) * Rk.n.i
+12 : Rk.v = Rk.p.v - v.n.v
+13 : v.signalSource.y = v.signalSource.offset + (if time < v.signalSource.startTime then 0.0 else v.signalSource.amplitude * sin(6.28318530717959 * (v.signalSource.freqHz * (time - v.signalSource.startTime)) + v.signalSource.phase))
+14 : v.signalSource.y = v.p.v - v.n.v
+15 : Lk.i + (Ck.p.i + (-La.i)) - Rk.n.i = 0.0
+16 : Rk.n.i + (La.i + ((-Ck.p.i) + (-Lk.i))) = 0.0
+17 : La.L * der(La.i) = La.v
+18 : Ck.p.i = Ck.C * der(Ck.v)
+19 : Lk.L * der(Lk.i) = Lk.v
+Simple Equations (3)
+=========
+1 : Algorithm no: 2 for inputs: () => outputs: ()
+2 : Algorithm no: 1 for inputs: () => outputs: ()
+3 : Algorithm no: 0 for inputs: () => outputs: ()
+Initial Equations (0)
+=========
+Zero Crossings :
+===============
+
+Array Equations :
+===============
+Algorithms:
+===============
+0. algorithm
+  assert( 1.0 + Rm.alpha * (Rm.T - Rm.T_ref) >= 1e-15, "Temperature outside scope of model!");
+1. algorithm
+  assert( 1.0 + Rs.alpha * (Rs.T - Rs.T_ref) >= 1e-15, "Temperature outside scope of model!");
+2. algorithm
+  assert( 1.0 + Rk.alpha * (Rk.T - Rk.T_ref) >= 1e-15, "Temperature outside scope of model!");
+Incidence Matrix (row == equation)
+====================================
+number of rows: 19
+1:19 -12 
+2:17 19 -12 
+3:19 15 18 
+4:16 -12 
+5:14 16 -12 
+6:16 3 15 
+7:13 18 6 
+8:-11 6 2 
+9:9 6 2 
+10:7 5 
+11:4 7 5 
+12:7 6 2 
+13:1 
+14:1 3 2 
+15:5 10 -8 -12 
+16:-8 -12 5 10 
+17:12 13 
+18:10 11 
+19:8 9 
+Transpose Incidence Matrix (row == var)
+=====================================
+number of rows: 19
+1:14 13 
+2:14 12 9 8 
+3:14 6 
+4:11 
+5:16 15 11 10 
+6:12 9 8 7 
+7:12 11 10 
+8:19 -16 -15 
+9:19 9 
+10:18 16 15 
+11:18 -8 
+12:17 -16 -15 -5 -4 -2 -1 
+13:17 7 
+14:5 
+15:6 3 
+16:6 5 4 
+17:2 
+18:7 3 
+19:3 2 1 
+Matching
+========
+19 variables and equations
+var 1 is solved in eqn 13
+var 2 is solved in eqn 12
+var 3 is solved in eqn 14
+var 4 is solved in eqn 11
+var 5 is solved in eqn 15
+var 6 is solved in eqn 8
+var 7 is solved in eqn 10
+var 8 is solved in eqn 19
+var 9 is solved in eqn 9
+var 10 is solved in eqn 16
+var 11 is solved in eqn 18
+var 12 is solved in eqn 17
+var 13 is solved in eqn 7
+var 14 is solved in eqn 5
+var 15 is solved in eqn 6
+var 16 is solved in eqn 4
+var 17 is solved in eqn 2
+var 18 is solved in eqn 3
+var 19 is solved in eqn 1
+Blocks
+=======
+{16, 15} Ck.p.i Rk.n.i 
+{18} der(Ck.v) 
+{13} v.signalSource.y 
+{10} Rk.v 
+{11} Rk.LossPower 
+{12, 8} v.n.v Rk.p.v 
+{9} Lk.v 
+{19} der(Lk.i) 
+{14} v.p.v 
+{4} Rs.v 
+{5} Rs.LossPower 
+{6} Rs.n.v 
+{1} Rm.v 
+{2} Rm.LossPower 
+{3} Rm.n.v 
+{7} La.v 
+{17} der(La.i) 
