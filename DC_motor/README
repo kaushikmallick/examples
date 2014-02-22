@@ -1,5 +1,5 @@
-This folder contains the files relevant to the state-space matrix extraction of the RLC circuit as in the figure DC_motor.png as in the OpenModelica schematic DC_motor.mo
+This folder contains the files relevant to the state-space matrix extraction of the RLC equivalent of the DC motor connected to spring-flywheel-damper system as in the figure DC_motor.png.
 
-Output of the compilation of the Modelica file using the command "omc +s +d=bltdump DC_motor.mo Modelica > DC_motor.txt" generates the output file DC_motor.txt
+Output of the compilation of the Modelica file using the command "omc +s +d=bltdump DC_motor.mo Modelica > DC_motor.txt" generates the output file DC_motor.txt.
 
 Further, the python script getPolymat.py (as found in the path "../getStateSpace" generates the output files in the folder DC_motor_output.
