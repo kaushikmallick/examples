@@ -2,4 +2,4 @@ This folder contains the files relevant to the state-space matrix extraction of 
 
 Output of the compilation of the Modelica file using the command "omc +s +d=bltdump RLC_ckt.mo Modelica > RLC_ckt.txt" generates the output file RLC_ckt.txt.
 
-Further, the python script getPolymat.py (as found in the path "../getStateSpace" generates the output files in the folder RLC_ckt_output.
+Further, the python script getPolymat.py (as found in the path "github.com/kaushikmallick/getStateSpace" generates the output files in the folder RLC_ckt_output.
