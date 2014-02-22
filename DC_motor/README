@@ -2,4 +2,4 @@ This folder contains the files relevant to the state-space matrix extraction of 
 
 Output of the compilation of the Modelica file using the command "omc +s +d=bltdump DC_motor.mo Modelica > DC_motor.txt" generates the output file DC_motor.txt.
 
-Further, the python script getPolymat.py (as found in the path "github.com/kaushikmallick/getStateSpace" generates the output files in the folder DC_motor_output.
+Further, the python script getPolymat.py (with the output variable "La.i") generates the output files in the folder DC_motor_output.
